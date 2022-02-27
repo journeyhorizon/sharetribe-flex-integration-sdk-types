@@ -15,7 +15,7 @@ import {
   ListingRelationships,
   StockReservationRelationships,
   TransactionRelationships,
-  UserRelationships,
+  UserRelationships
 } from "./entities";
 import { LatLng, LatLngBounds, Money, UUID } from "./types";
 
@@ -371,7 +371,7 @@ export type IntegrationSdk = {
     query: (
       params?: Partial<{
         startAfterSequenceId: number;
-        createdAtStart: number;
+        createdAtStart: Date;
         resourceId: UUID;
         relatedResourceId: UUID;
         eventTypes: Array<EventTypes>;
