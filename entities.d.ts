@@ -312,7 +312,7 @@ type EventTypes =
       | "booking"
       | "review"
       | "stockAdjustment"
-      | "stockReservation"}.${"created" | "updated" | "deleted"}`
+      | "stockReservation"}/${"created" | "updated" | "deleted"}`
   | "transaction/initiated"
   | "transaction/transitioned"
   | "transaction/updated"
