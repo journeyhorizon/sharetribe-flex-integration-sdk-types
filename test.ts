@@ -749,6 +749,38 @@ function testIDTypeFlexibility() {
   };
 }
 
+// Test to verify that DenormalizedListingResource properly handles optional images
+function testDenormalizedListingImages() {
+  const denormalizedListing: DenormalizedListingResource = {} as any;
+
+  // Test that images is properly typed as ImageResource[] | undefined
+  if (denormalizedListing?.relationships?.images) {
+    // This should be ImageResource[]
+    const images: ImageResource[] = denormalizedListing?.relationships?.images;
+
+    // Should be able to access image properties type-safely
+    const firstImageUrl: string = images[0].attributes.variants.default.url;
+    console.log(`First image URL: ${firstImageUrl}`);
+
+    // Should be able to iterate safely
+    images.forEach((image: ImageResource) => {
+      const width: number = image.attributes.variants.default.width;
+      const height: number = image.attributes.variants.default.height;
+      console.log(`Image size: ${width}x${height}`);
+    });
+  } else {
+    // images is undefined or relationships is undefined
+    console.log("No images available");
+  }
+
+  // Test direct assignment - should now work correctly
+  const testImages: ImageResource[] | undefined =
+    denormalizedListing?.relationships?.images;
+  console.log(`Test images length: ${testImages?.length ?? 0}`);
+
+  return denormalizedListing;
+}
+
 // Export types for external testing (this won't actually run but shows the types work)
 export type {
   SdkConfig,
@@ -784,4 +816,5 @@ export {
   testAPIMethodSignatures,
   testDenormalizedTypes,
   testIDTypeFlexibility,
+  testDenormalizedListingImages,
 };

@@ -170,6 +170,14 @@ export interface UserProfile {
   metadata: ExtendedData;
 }
 
+interface RelationshipWithSingleData<Type> {
+  data: { id: ID; type: Type };
+}
+
+interface RelationshipWithMultipleData<Type> {
+  data: Array<{ id: ID; type: Type }>;
+}
+
 export interface UserResource extends BaseResource {
   type: "user";
   attributes: {
@@ -186,10 +194,10 @@ export interface UserResource extends BaseResource {
     permissions: UserPermissionSet;
   };
   relationships?: {
-    marketplace: { data: { id: ID; type: "marketplace" } };
+    marketplace?: { data: { id: ID; type: "marketplace" } };
     profileImage?: { data: { id: ID; type: "image" } };
     stripeAccount?: { data: { id: ID; type: "stripeAccount" } };
-    effectivePermissionSet: { data: { id: ID; type: "permissionSet" } };
+    effectivePermissionSet?: { data: { id: ID; type: "permissionSet" } };
   };
 }
 
@@ -233,9 +241,9 @@ export interface ListingResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    marketplace: { data: { id: ID; type: "marketplace" } };
-    author: { data: { id: ID; type: "user" } };
-    images?: { data: Array<{ id: ID; type: "image" }> };
+    marketplace?: { data: { id: ID; type: "marketplace" } };
+    author?: { data: { id: ID; type: "user" } };
+    images?: RelationshipWithMultipleData<"image">;
     currentStock?: { data: { id: ID; type: "stock" } };
   };
 }
@@ -294,10 +302,10 @@ export interface TransactionResource extends BaseResource {
     transitions: TransitionRecord[];
   };
   relationships?: {
-    marketplace: { data: { id: ID; type: "marketplace" } };
-    listing: { data: { id: ID; type: "listing" } };
-    provider: { data: { id: ID; type: "user" } };
-    customer: { data: { id: ID; type: "user" } };
+    marketplace?: { data: { id: ID; type: "marketplace" } };
+    listing?: { data: { id: ID; type: "listing" } };
+    provider?: { data: { id: ID; type: "user" } };
+    customer?: { data: { id: ID; type: "user" } };
     booking?: { data: { id: ID; type: "booking" } };
     stockReservation?: { data: { id: ID; type: "stockReservation" } };
     reviews?: { data: Array<{ id: ID; type: "review" }> };
@@ -324,8 +332,8 @@ export interface BookingResource extends BaseResource {
     state: BookingState;
   };
   relationships?: {
-    transaction: { data: { id: ID; type: "transaction" } };
-    listing: { data: { id: ID; type: "listing" } };
+    transaction?: { data: { id: ID; type: "transaction" } };
+    listing?: { data: { id: ID; type: "listing" } };
   };
 }
 
@@ -345,7 +353,7 @@ export interface StockAdjustmentResource extends BaseResource {
     quantity: number;
   };
   relationships?: {
-    listing: { data: { id: ID; type: "listing" } };
+    listing?: { data: { id: ID; type: "listing" } };
     stockReservation?: { data: { id: ID; type: "stockReservation" } };
   };
 }
@@ -365,9 +373,9 @@ export interface StockReservationResource extends BaseResource {
     state: StockReservationState;
   };
   relationships?: {
-    listing: { data: { id: ID; type: "listing" } };
-    transaction: { data: { id: ID; type: "transaction" } };
-    stockAdjustments: { data: Array<{ id: ID; type: "stockAdjustment" }> };
+    listing?: { data: { id: ID; type: "listing" } };
+    transaction?: { data: { id: ID; type: "transaction" } };
+    stockAdjustments?: { data: Array<{ id: ID; type: "stockAdjustment" }> };
   };
 }
 
@@ -380,7 +388,7 @@ export interface AvailabilityExceptionResource extends BaseResource {
     end: Date;
   };
   relationships?: {
-    listing: { data: { id: ID; type: "listing" } };
+    listing?: { data: { id: ID; type: "listing" } };
   };
 }
 
@@ -399,10 +407,10 @@ export interface ReviewResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    author: { data: { id: ID; type: "user" } };
+    author?: { data: { id: ID; type: "user" } };
     listing?: { data: { id: ID; type: "listing" } }; // only for ofProvider reviews
-    subject: { data: { id: ID; type: "user" } };
-    transaction: { data: { id: ID; type: "transaction" } };
+    subject?: { data: { id: ID; type: "user" } };
+    transaction?: { data: { id: ID; type: "transaction" } };
   };
 }
 
@@ -414,8 +422,8 @@ export interface MessageResource extends BaseResource {
     createdAt: Date;
   };
   relationships?: {
-    sender: { data: { id: ID; type: "user" } };
-    transaction: { data: { id: ID; type: "transaction" } };
+    sender?: { data: { id: ID; type: "user" } };
+    transaction?: { data: { id: ID; type: "transaction" } };
   };
 }
 
@@ -1023,6 +1031,8 @@ type ResolveRelationship<T> = T extends { data: { id: ID; type: infer Type } }
     ? MessageResource
     : Type extends "event"
     ? EventResource
+    : Type extends "permissionSet"
+    ? UserPermissionSet
     : BaseResource
   : never;
 
@@ -1041,11 +1051,14 @@ type ResolveArrayRelationship<T> = T extends {
     : BaseResource[]
   : never;
 
-// Utility type to denormalize relationships in a resource
 type DenormalizeRelationships<T> = T extends { relationships?: infer R }
   ? R extends Record<string, any>
     ? {
-        [K in keyof R]: R[K] extends { data: Array<any> }
+        [K in keyof R]: R[K] extends
+          | {
+              data: Array<any>;
+            }
+          | undefined
           ? ResolveArrayRelationship<R[K]>
           : ResolveRelationship<R[K]>;
       }
