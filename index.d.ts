@@ -85,6 +85,9 @@ export function toType(
   value: any
 ): UUID | LatLng | LatLngBounds | Money | BigDecimal | any;
 
+// ID type that supports both UUID objects and string values
+export type ID = UUID | string;
+
 // JSON serialization functions (deprecated but kept for compatibility)
 export function replacer(key: string, value: any): any;
 export function reviver(key: string, value: any): any;
@@ -114,7 +117,7 @@ export interface ResponseMeta {
 }
 
 export interface ResourceObject {
-  id: UUID;
+  id: ID;
   type: string;
   attributes?: { [key: string]: any };
   relationships?: { [key: string]: any };
@@ -123,7 +126,7 @@ export interface ResourceObject {
 
 // Base resource interface
 export interface BaseResource {
-  id: UUID;
+  id: ID;
   type: string;
 }
 
@@ -183,10 +186,10 @@ export interface UserResource extends BaseResource {
     permissions: UserPermissionSet;
   };
   relationships?: {
-    marketplace: { data: { id: UUID; type: "marketplace" } };
-    profileImage?: { data: { id: UUID; type: "image" } };
-    stripeAccount?: { data: { id: UUID; type: "stripeAccount" } };
-    effectivePermissionSet: { data: { id: UUID; type: "permissionSet" } };
+    marketplace: { data: { id: ID; type: "marketplace" } };
+    profileImage?: { data: { id: ID; type: "image" } };
+    stripeAccount?: { data: { id: ID; type: "stripeAccount" } };
+    effectivePermissionSet: { data: { id: ID; type: "permissionSet" } };
   };
 }
 
@@ -230,10 +233,10 @@ export interface ListingResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    marketplace: { data: { id: UUID; type: "marketplace" } };
-    author: { data: { id: UUID; type: "user" } };
-    images?: { data: Array<{ id: UUID; type: "image" }> };
-    currentStock?: { data: { id: UUID; type: "stock" } };
+    marketplace: { data: { id: ID; type: "marketplace" } };
+    author: { data: { id: ID; type: "user" } };
+    images?: { data: Array<{ id: ID; type: "image" }> };
+    currentStock?: { data: { id: ID; type: "stock" } };
   };
 }
 
@@ -291,14 +294,14 @@ export interface TransactionResource extends BaseResource {
     transitions: TransitionRecord[];
   };
   relationships?: {
-    marketplace: { data: { id: UUID; type: "marketplace" } };
-    listing: { data: { id: UUID; type: "listing" } };
-    provider: { data: { id: UUID; type: "user" } };
-    customer: { data: { id: UUID; type: "user" } };
-    booking?: { data: { id: UUID; type: "booking" } };
-    stockReservation?: { data: { id: UUID; type: "stockReservation" } };
-    reviews?: { data: Array<{ id: UUID; type: "review" }> };
-    messages?: { data: Array<{ id: UUID; type: "message" }> };
+    marketplace: { data: { id: ID; type: "marketplace" } };
+    listing: { data: { id: ID; type: "listing" } };
+    provider: { data: { id: ID; type: "user" } };
+    customer: { data: { id: ID; type: "user" } };
+    booking?: { data: { id: ID; type: "booking" } };
+    stockReservation?: { data: { id: ID; type: "stockReservation" } };
+    reviews?: { data: Array<{ id: ID; type: "review" }> };
+    messages?: { data: Array<{ id: ID; type: "message" }> };
   };
 }
 
@@ -321,8 +324,8 @@ export interface BookingResource extends BaseResource {
     state: BookingState;
   };
   relationships?: {
-    transaction: { data: { id: UUID; type: "transaction" } };
-    listing: { data: { id: UUID; type: "listing" } };
+    transaction: { data: { id: ID; type: "transaction" } };
+    listing: { data: { id: ID; type: "listing" } };
   };
 }
 
@@ -342,8 +345,8 @@ export interface StockAdjustmentResource extends BaseResource {
     quantity: number;
   };
   relationships?: {
-    listing: { data: { id: UUID; type: "listing" } };
-    stockReservation?: { data: { id: UUID; type: "stockReservation" } };
+    listing: { data: { id: ID; type: "listing" } };
+    stockReservation?: { data: { id: ID; type: "stockReservation" } };
   };
 }
 
@@ -362,9 +365,9 @@ export interface StockReservationResource extends BaseResource {
     state: StockReservationState;
   };
   relationships?: {
-    listing: { data: { id: UUID; type: "listing" } };
-    transaction: { data: { id: UUID; type: "transaction" } };
-    stockAdjustments: { data: Array<{ id: UUID; type: "stockAdjustment" }> };
+    listing: { data: { id: ID; type: "listing" } };
+    transaction: { data: { id: ID; type: "transaction" } };
+    stockAdjustments: { data: Array<{ id: ID; type: "stockAdjustment" }> };
   };
 }
 
@@ -377,7 +380,7 @@ export interface AvailabilityExceptionResource extends BaseResource {
     end: Date;
   };
   relationships?: {
-    listing: { data: { id: UUID; type: "listing" } };
+    listing: { data: { id: ID; type: "listing" } };
   };
 }
 
@@ -396,10 +399,10 @@ export interface ReviewResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    author: { data: { id: UUID; type: "user" } };
-    listing?: { data: { id: UUID; type: "listing" } }; // only for ofProvider reviews
-    subject: { data: { id: UUID; type: "user" } };
-    transaction: { data: { id: UUID; type: "transaction" } };
+    author: { data: { id: ID; type: "user" } };
+    listing?: { data: { id: ID; type: "listing" } }; // only for ofProvider reviews
+    subject: { data: { id: ID; type: "user" } };
+    transaction: { data: { id: ID; type: "transaction" } };
   };
 }
 
@@ -411,17 +414,17 @@ export interface MessageResource extends BaseResource {
     createdAt: Date;
   };
   relationships?: {
-    sender: { data: { id: UUID; type: "user" } };
-    transaction: { data: { id: UUID; type: "transaction" } };
+    sender: { data: { id: ID; type: "user" } };
+    transaction: { data: { id: ID; type: "transaction" } };
   };
 }
 
 // Event resource
 export interface EventAuditData {
-  userId?: UUID;
-  adminId?: UUID;
-  requestId?: UUID;
-  clientId?: UUID;
+  userId?: ID;
+  adminId?: ID;
+  requestId?: ID;
+  clientId?: ID;
 }
 
 export interface EventResource extends BaseResource {
@@ -429,10 +432,10 @@ export interface EventResource extends BaseResource {
   attributes: {
     createdAt: Date;
     sequenceId: number;
-    marketplaceId: UUID;
+    marketplaceId: ID;
     eventType: string;
     source: string;
-    resourceId: UUID;
+    resourceId: ID;
     resourceType: string;
     resource: ResourceObject | null;
     previousValues: {
@@ -524,8 +527,8 @@ export interface UserQueryParams extends EnhancedQueryParams {
 
 // Listing query parameters
 export interface ListingQueryParams extends EnhancedQueryParams {
-  authorId?: UUID;
-  ids?: UUID[]; // comma separated list, max 100
+  authorId?: ID;
+  ids?: ID[]; // comma separated list, max 100
   states?: ListingState[];
   createdAtStart?: Date | string; // ISO 8601 timestamp
   createdAtEnd?: Date | string; // ISO 8601 timestamp
@@ -549,10 +552,10 @@ export interface ListingQueryParams extends EnhancedQueryParams {
 export interface TransactionQueryParams extends EnhancedQueryParams {
   createdAtStart?: Date | string; // ISO 8601 timestamp
   createdAtEnd?: Date | string; // ISO 8601 timestamp
-  userId?: UUID; // either customer or provider
-  customerId?: UUID;
-  providerId?: UUID;
-  listingId?: UUID;
+  userId?: ID; // either customer or provider
+  customerId?: ID;
+  providerId?: ID;
+  listingId?: ID;
   lastTransitions?: string[]; // transition names
   processNames?: string[];
   states?: string[];
@@ -571,7 +574,7 @@ export interface TransactionQueryParams extends EnhancedQueryParams {
 
 // Availability Exception query parameters
 export interface AvailabilityExceptionQueryParams extends EnhancedQueryParams {
-  listingId: UUID;
+  listingId: ID;
   start: Date | string; // ISO 8601 timestamp
   end: Date | string; // ISO 8601 timestamp
 }
@@ -580,14 +583,14 @@ export interface AvailabilityExceptionQueryParams extends EnhancedQueryParams {
 export interface EventQueryParams extends EnhancedQueryParams {
   startAfterSequenceId?: number;
   createdAtStart?: Date | string; // ISO 8601 timestamp
-  resourceId?: UUID;
-  relatedResourceId?: UUID;
+  resourceId?: ID;
+  relatedResourceId?: ID;
   eventTypes?: string[];
 }
 
 // Stock Adjustment query parameters
 export interface StockAdjustmentQueryParams extends EnhancedQueryParams {
-  listingId: UUID;
+  listingId: ID;
   start: Date | string; // ISO 8601 timestamp
   end: Date | string; // ISO 8601 timestamp
 }
@@ -596,7 +599,7 @@ export interface StockAdjustmentQueryParams extends EnhancedQueryParams {
 
 // User API body parameters
 export interface UpdateUserProfileParams {
-  id: UUID;
+  id: ID;
   firstName?: string;
   lastName?: string;
   displayName?: string | null;
@@ -605,15 +608,15 @@ export interface UpdateUserProfileParams {
   protectedData?: ExtendedData;
   privateData?: ExtendedData;
   metadata?: ExtendedData;
-  profileImageId?: UUID | null;
+  profileImageId?: ID | null;
 }
 
 export interface ApproveUserParams {
-  id: UUID;
+  id: ID;
 }
 
 export interface UpdateUserPermissionsParams {
-  id: UUID;
+  id: ID;
   postListings?: "permission/allow" | "permission/deny";
   initiateTransactions?: "permission/allow" | "permission/deny";
   read?: "permission/allow" | "permission/deny";
@@ -622,7 +625,7 @@ export interface UpdateUserPermissionsParams {
 // Listing API body parameters
 export interface CreateListingParams {
   title: string;
-  authorId: UUID;
+  authorId: ID;
   state: "published" | "pendingApproval";
   description?: string;
   geolocation?: LatLng;
@@ -631,11 +634,11 @@ export interface CreateListingParams {
   publicData?: ExtendedData;
   privateData?: ExtendedData;
   metadata?: ExtendedData;
-  images?: UUID[];
+  images?: ID[];
 }
 
 export interface UpdateListingParams {
-  id: UUID;
+  id: ID;
   title?: string;
   description?: string;
   geolocation?: LatLng | null;
@@ -644,36 +647,36 @@ export interface UpdateListingParams {
   publicData?: ExtendedData;
   privateData?: ExtendedData;
   metadata?: ExtendedData;
-  images?: UUID[];
+  images?: ID[];
 }
 
 export interface ApproveListingParams {
-  id: UUID;
+  id: ID;
 }
 
 export interface OpenListingParams {
-  id: UUID;
+  id: ID;
 }
 
 export interface CloseListingParams {
-  id: UUID;
+  id: ID;
 }
 
 // Transaction API body parameters
 export interface TransitionTransactionParams {
-  id: UUID;
+  id: ID;
   transition: string;
   params?: ExtendedData;
 }
 
 export interface TransitionSpeculativeParams {
-  id: UUID;
+  id: ID;
   transition: string;
   params?: ExtendedData;
 }
 
 export interface UpdateTransactionMetadataParams {
-  id: UUID;
+  id: ID;
   metadata?: ExtendedData;
 }
 
@@ -684,26 +687,26 @@ export interface UploadImageParams {
 
 // Availability Exception API body parameters
 export interface CreateAvailabilityExceptionParams {
-  listingId: UUID;
+  listingId: ID;
   seats: number;
   start: Date | string; // ISO 8601 timestamp
   end: Date | string; // ISO 8601 timestamp
 }
 
 export interface DeleteAvailabilityExceptionParams {
-  id: UUID;
+  id: ID;
 }
 
 // Stock API body parameters
 export interface CompareAndSetStockParams {
-  listingId: UUID;
+  listingId: ID;
   oldTotal: number | null;
   newTotal: number;
 }
 
 // Stock Adjustment API body parameters
 export interface CreateStockAdjustmentParams {
-  listingId: UUID;
+  listingId: ID;
   quantity: number;
 }
 
@@ -747,14 +750,14 @@ type SDKMethodResult<T = any> = Promise<ApiResponse<T>>;
 // SDK API structure
 export interface MarketplaceAPI {
   show(
-    queryParams?: { id?: UUID } & SparseAttributes & RelationshipLimits,
+    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
     opts?: CommandOptions
   ): SDKMethodResult<MarketplaceResource>;
 }
 
 export interface UsersAPI {
   show(
-    queryParams?: { id?: UUID; email?: string } & SparseAttributes &
+    queryParams?: { id?: ID; email?: string } & SparseAttributes &
       RelationshipLimits,
     opts?: CommandOptions
   ): SDKMethodResult<UserResource>;
@@ -778,7 +781,7 @@ export interface UsersAPI {
 
 export interface ListingsAPI {
   show(
-    queryParams?: { id?: UUID } & SparseAttributes & RelationshipLimits,
+    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
     opts?: CommandOptions
   ): SDKMethodResult<ListingResource>;
   query(
@@ -809,7 +812,7 @@ export interface ListingsAPI {
 
 export interface TransactionsAPI {
   show(
-    queryParams?: { id?: UUID } & SparseAttributes & RelationshipLimits,
+    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
     opts?: CommandOptions
   ): SDKMethodResult<TransactionResource>;
   query(
@@ -879,7 +882,7 @@ export interface StockAPI {
 
 export interface StockReservationsAPI {
   show(
-    queryParams?: { id?: UUID } & SparseAttributes & RelationshipLimits,
+    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
     opts?: CommandOptions
   ): SDKMethodResult<StockReservationResource>;
 }
@@ -909,6 +912,7 @@ export function createInstance(config: SdkConfig): SharetribeIntegrationSDK;
 export namespace types {
   export {
     UUID,
+    ID,
     LatLng,
     LatLngBounds,
     Money,
@@ -976,7 +980,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 // These types represent resources with their relationships resolved and included directly
 
 // Helper type to resolve a relationship reference to its actual resource
-type ResolveRelationship<T> = T extends { data: { id: UUID; type: infer Type } }
+type ResolveRelationship<T> = T extends { data: { id: ID; type: infer Type } }
   ? Type extends "user"
     ? UserResource
     : Type extends "listing"
@@ -1010,7 +1014,7 @@ type ResolveRelationship<T> = T extends { data: { id: UUID; type: infer Type } }
 
 // Helper type to resolve array relationships
 type ResolveArrayRelationship<T> = T extends {
-  data: Array<{ id: UUID; type: infer Type }>;
+  data: Array<{ id: ID; type: infer Type }>;
 }
   ? Type extends "image"
     ? ImageResource[]

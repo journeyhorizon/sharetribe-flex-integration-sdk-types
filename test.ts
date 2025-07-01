@@ -1,11 +1,14 @@
 // TypeScript type testing file for sharetribe-flex-integration-sdk
 // This file tests that all types are properly defined and can be used
 
+// Import UUID as value for testing
+import { UUID } from "./index";
+
 // Type-only imports for testing
 import type {
   SdkConfig,
   SharetribeIntegrationSDK,
-  UUID,
+  ID,
   LatLng,
   LatLngBounds,
   Money,
@@ -634,6 +637,122 @@ function testDenormalizedTypes() {
   };
 }
 
+// Test ID type flexibility (UUID vs string)
+function testIDTypeFlexibility() {
+  // Test that ID accepts both UUID objects and strings
+  const uuidObj = new UUID("123e4567-e89b-12d3-a456-426614174000");
+  const stringId = "123e4567-e89b-12d3-a456-426614174000";
+
+  // Both should be valid ID values
+  const userIdAsUUID: ID = uuidObj;
+  const userIdAsString: ID = stringId;
+
+  // Test in resource objects
+  const userWithUUIDId: UserResource = {
+    id: uuidObj,
+    type: "user",
+    attributes: {
+      banned: false,
+      deleted: false,
+      state: "active",
+      createdAt: new Date(),
+      email: "test@example.com",
+      emailVerified: true,
+      pendingEmail: null,
+      stripeConnected: false,
+      identityProviders: [],
+      profile: {
+        firstName: "Test",
+        lastName: "User",
+        displayName: "Test User",
+        abbreviatedName: "TU",
+        bio: null,
+        publicData: {},
+        protectedData: {},
+        privateData: {},
+        metadata: {},
+      },
+      permissions: {
+        postListings: "permission/allow",
+        initiateTransactions: "permission/allow",
+        read: "permission/allow",
+      },
+    },
+  };
+
+  const userWithStringId: UserResource = {
+    ...userWithUUIDId,
+    id: stringId,
+  };
+
+  // Test in query parameters
+  const queryWithUUID: UserQueryParams = {
+    // page and perPage would be inherited from EnhancedQueryParams
+    page: 1,
+    perPage: 50,
+  };
+
+  const queryWithString: ListingQueryParams = {
+    authorId: stringId, // ID can be string
+    page: 1,
+    perPage: 25,
+  };
+
+  // Test in body parameters
+  const updateParamsWithUUID: UpdateUserProfileParams = {
+    id: uuidObj,
+    firstName: "Updated",
+    profileImageId: uuidObj,
+  };
+
+  const updateParamsWithString: UpdateUserProfileParams = {
+    id: stringId,
+    firstName: "Updated",
+    profileImageId: stringId,
+  };
+
+  // Test in relationship references
+  const listingWithStringRefs: ListingResource = {
+    id: stringId,
+    type: "listing",
+    attributes: {
+      title: "Test Listing",
+      description: "A test listing",
+      geolocation: null,
+      createdAt: new Date(),
+      price: null,
+      availabilityPlan: null,
+      publicData: {},
+      privateData: {},
+      metadata: {},
+      state: "published",
+      deleted: false,
+    },
+    relationships: {
+      marketplace: { data: { id: stringId, type: "marketplace" } },
+      author: { data: { id: stringId, type: "user" } },
+      images: {
+        data: [
+          { id: stringId, type: "image" },
+          { id: uuidObj, type: "image" }, // Mix of string and UUID
+        ],
+      },
+    },
+  };
+
+  return {
+    userIdAsUUID,
+    userIdAsString,
+    userWithUUIDId,
+    userWithStringId,
+    queryWithUUID,
+    queryWithString,
+    updateParamsWithUUID,
+    updateParamsWithString,
+    listingWithStringRefs,
+  };
+}
+
 // Export types for external testing (this won't actually run but shows the types work)
 export type {
   SdkConfig,
@@ -668,4 +787,5 @@ export {
   testSparseAttributes,
   testAPIMethodSignatures,
   testDenormalizedTypes,
+  testIDTypeFlexibility,
 };
