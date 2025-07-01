@@ -1,0 +1,20 @@
+{
+  "name": "@types/sharetribe-flex-integration-sdk",
+  "version": "1.11.0",
+  "description": "TypeScript definitions for sharetribe-flex-integration-sdk",
+  "main": "",
+  "types": "index.d.ts",
+  "typesPublisherContentHash": "a41a8f7f2e8dc2f2d3b1ba9b2d8c5e4f3c6d7e8f9a0b1c2d3e4f5g6h7i8j9k0l",
+  "scripts": {
+    "test": "dtslint .",
+    "build": "tsc --noEmit"
+  },
+  "author": "Thang Nguyen",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "dtslint": "^4.2.1",
+    "typescript": "^4.9.0"
+  },
+  "typeScriptVersion": "4.1"
+}
