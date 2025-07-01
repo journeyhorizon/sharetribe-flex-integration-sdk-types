@@ -117,7 +117,7 @@ export interface ResponseMeta {
 }
 
 export interface ResourceObject {
-  id: ID;
+  id: UUID;
   type: string;
   attributes?: { [key: string]: any };
   relationships?: { [key: string]: any };
@@ -126,7 +126,7 @@ export interface ResourceObject {
 
 // Base resource interface
 export interface BaseResource {
-  id: ID;
+  id: UUID;
   type: string;
 }
 
@@ -171,11 +171,11 @@ export interface UserProfile {
 }
 
 interface RelationshipWithSingleData<Type> {
-  data: { id: ID; type: Type };
+  data: { id: UUID; type: Type };
 }
 
 interface RelationshipWithMultipleData<Type> {
-  data: Array<{ id: ID; type: Type }>;
+  data: Array<{ id: UUID; type: Type }>;
 }
 
 export interface UserResource extends BaseResource {
@@ -194,10 +194,10 @@ export interface UserResource extends BaseResource {
     permissions: UserPermissionSet;
   };
   relationships?: {
-    marketplace?: { data: { id: ID; type: "marketplace" } };
-    profileImage?: { data: { id: ID; type: "image" } };
-    stripeAccount?: { data: { id: ID; type: "stripeAccount" } };
-    effectivePermissionSet?: { data: { id: ID; type: "permissionSet" } };
+    marketplace?: { data: { id: UUID; type: "marketplace" } };
+    profileImage?: { data: { id: UUID; type: "image" } };
+    stripeAccount?: { data: { id: UUID; type: "stripeAccount" } };
+    effectivePermissionSet?: { data: { id: UUID; type: "permissionSet" } };
   };
 }
 
@@ -241,10 +241,10 @@ export interface ListingResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    marketplace?: { data: { id: ID; type: "marketplace" } };
-    author?: { data: { id: ID; type: "user" } };
+    marketplace?: { data: { id: UUID; type: "marketplace" } };
+    author?: { data: { id: UUID; type: "user" } };
     images?: RelationshipWithMultipleData<"image">;
-    currentStock?: { data: { id: ID; type: "stock" } };
+    currentStock?: { data: { id: UUID; type: "stock" } };
   };
 }
 
@@ -302,14 +302,14 @@ export interface TransactionResource extends BaseResource {
     transitions: TransitionRecord[];
   };
   relationships?: {
-    marketplace?: { data: { id: ID; type: "marketplace" } };
-    listing?: { data: { id: ID; type: "listing" } };
-    provider?: { data: { id: ID; type: "user" } };
-    customer?: { data: { id: ID; type: "user" } };
-    booking?: { data: { id: ID; type: "booking" } };
-    stockReservation?: { data: { id: ID; type: "stockReservation" } };
-    reviews?: { data: Array<{ id: ID; type: "review" }> };
-    messages?: { data: Array<{ id: ID; type: "message" }> };
+    marketplace?: { data: { id: UUID; type: "marketplace" } };
+    listing?: { data: { id: UUID; type: "listing" } };
+    provider?: { data: { id: UUID; type: "user" } };
+    customer?: { data: { id: UUID; type: "user" } };
+    booking?: { data: { id: UUID; type: "booking" } };
+    stockReservation?: { data: { id: UUID; type: "stockReservation" } };
+    reviews?: { data: Array<{ id: UUID; type: "review" }> };
+    messages?: { data: Array<{ id: UUID; type: "message" }> };
   };
 }
 
@@ -332,8 +332,8 @@ export interface BookingResource extends BaseResource {
     state: BookingState;
   };
   relationships?: {
-    transaction?: { data: { id: ID; type: "transaction" } };
-    listing?: { data: { id: ID; type: "listing" } };
+    transaction?: { data: { id: UUID; type: "transaction" } };
+    listing?: { data: { id: UUID; type: "listing" } };
   };
 }
 
@@ -353,8 +353,8 @@ export interface StockAdjustmentResource extends BaseResource {
     quantity: number;
   };
   relationships?: {
-    listing?: { data: { id: ID; type: "listing" } };
-    stockReservation?: { data: { id: ID; type: "stockReservation" } };
+    listing?: { data: { id: UUID; type: "listing" } };
+    stockReservation?: { data: { id: UUID; type: "stockReservation" } };
   };
 }
 
@@ -373,9 +373,9 @@ export interface StockReservationResource extends BaseResource {
     state: StockReservationState;
   };
   relationships?: {
-    listing?: { data: { id: ID; type: "listing" } };
-    transaction?: { data: { id: ID; type: "transaction" } };
-    stockAdjustments?: { data: Array<{ id: ID; type: "stockAdjustment" }> };
+    listing?: { data: { id: UUID; type: "listing" } };
+    transaction?: { data: { id: UUID; type: "transaction" } };
+    stockAdjustments?: { data: Array<{ id: UUID; type: "stockAdjustment" }> };
   };
 }
 
@@ -388,7 +388,7 @@ export interface AvailabilityExceptionResource extends BaseResource {
     end: Date;
   };
   relationships?: {
-    listing?: { data: { id: ID; type: "listing" } };
+    listing?: { data: { id: UUID; type: "listing" } };
   };
 }
 
@@ -407,10 +407,10 @@ export interface ReviewResource extends BaseResource {
     deleted: boolean;
   };
   relationships?: {
-    author?: { data: { id: ID; type: "user" } };
-    listing?: { data: { id: ID; type: "listing" } }; // only for ofProvider reviews
-    subject?: { data: { id: ID; type: "user" } };
-    transaction?: { data: { id: ID; type: "transaction" } };
+    author?: { data: { id: UUID; type: "user" } };
+    listing?: { data: { id: UUID; type: "listing" } }; // only for ofProvider reviews
+    subject?: { data: { id: UUID; type: "user" } };
+    transaction?: { data: { id: UUID; type: "transaction" } };
   };
 }
 
@@ -422,17 +422,17 @@ export interface MessageResource extends BaseResource {
     createdAt: Date;
   };
   relationships?: {
-    sender?: { data: { id: ID; type: "user" } };
-    transaction?: { data: { id: ID; type: "transaction" } };
+    sender?: { data: { id: UUID; type: "user" } };
+    transaction?: { data: { id: UUID; type: "transaction" } };
   };
 }
 
 // Event resource
 export interface EventAuditData {
-  userId?: ID;
-  adminId?: ID;
-  requestId?: ID;
-  clientId?: ID;
+  userId?: UUID;
+  adminId?: UUID;
+  requestId?: UUID;
+  clientId?: UUID;
 }
 
 export interface EventResource extends BaseResource {
@@ -440,10 +440,10 @@ export interface EventResource extends BaseResource {
   attributes: {
     createdAt: Date;
     sequenceId: number;
-    marketplaceId: ID;
+    marketplaceId: UUID;
     eventType: string;
     source: string;
-    resourceId: ID;
+    resourceId: UUID;
     resourceType: string;
     resource: ResourceObject | null;
     previousValues: {
@@ -1002,7 +1002,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 // These types represent resources with their relationships resolved and included directly
 
 // Helper type to resolve a relationship reference to its actual resource
-type ResolveRelationship<T> = T extends { data: { id: ID; type: infer Type } }
+type ResolveRelationship<T> = T extends { data: { id: UUID; type: infer Type } }
   ? Type extends "user"
     ? UserResource
     : Type extends "listing"
@@ -1038,7 +1038,7 @@ type ResolveRelationship<T> = T extends { data: { id: ID; type: infer Type } }
 
 // Helper type to resolve array relationships
 type ResolveArrayRelationship<T> = T extends {
-  data: Array<{ id: ID; type: infer Type }>;
+  data: Array<{ id: UUID; type: infer Type }>;
 }
   ? Type extends "image"
     ? ImageResource[]
