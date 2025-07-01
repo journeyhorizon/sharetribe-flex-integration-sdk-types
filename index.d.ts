@@ -510,7 +510,8 @@ export interface RelationshipLimits {
 export interface EnhancedQueryParams
   extends BaseQueryParams,
     SparseAttributes,
-    RelationshipLimits {
+    RelationshipLimits,
+    CommandOptions {
   [key: string]: any;
 }
 
@@ -749,22 +750,12 @@ type SDKMethodResult<T = any> = Promise<ApiResponse<T>>;
 
 // SDK API structure
 export interface MarketplaceAPI {
-  show(
-    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
-    opts?: CommandOptions
-  ): SDKMethodResult<MarketplaceResource>;
+  show(params: ShowMarketplaceParams): SDKMethodResult<MarketplaceResource>;
 }
 
 export interface UsersAPI {
-  show(
-    queryParams?: { id?: ID; email?: string } & SparseAttributes &
-      RelationshipLimits,
-    opts?: CommandOptions
-  ): SDKMethodResult<UserResource>;
-  query(
-    queryParams?: UserQueryParams,
-    opts?: CommandOptions
-  ): Promise<PaginatedResponse<UserResource>>;
+  show(params: ShowUserParams): SDKMethodResult<UserResource>;
+  query(params: UserQueryParams): Promise<PaginatedResponse<UserResource>>;
   updateProfile(
     bodyParams: UpdateUserProfileParams,
     opts?: CommandOptions
@@ -780,13 +771,9 @@ export interface UsersAPI {
 }
 
 export interface ListingsAPI {
-  show(
-    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
-    opts?: CommandOptions
-  ): SDKMethodResult<ListingResource>;
+  show(params: ShowListingParams): SDKMethodResult<ListingResource>;
   query(
-    queryParams?: ListingQueryParams,
-    opts?: CommandOptions
+    params: ListingQueryParams
   ): Promise<PaginatedResponse<ListingResource>>;
   create(
     bodyParams: CreateListingParams,
@@ -811,13 +798,9 @@ export interface ListingsAPI {
 }
 
 export interface TransactionsAPI {
-  show(
-    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
-    opts?: CommandOptions
-  ): SDKMethodResult<TransactionResource>;
+  show(params: ShowTransactionParams): SDKMethodResult<TransactionResource>;
   query(
-    queryParams?: TransactionQueryParams,
-    opts?: CommandOptions
+    params: TransactionQueryParams
   ): Promise<PaginatedResponse<TransactionResource>>;
   transition(
     bodyParams: TransitionTransactionParams,
@@ -842,8 +825,7 @@ export interface ImagesAPI {
 
 export interface AvailabilityExceptionsAPI {
   query(
-    queryParams: AvailabilityExceptionQueryParams,
-    opts?: CommandOptions
+    params: AvailabilityExceptionQueryParams
   ): Promise<PaginatedResponse<AvailabilityExceptionResource>>;
   create(
     bodyParams: CreateAvailabilityExceptionParams,
@@ -856,16 +838,12 @@ export interface AvailabilityExceptionsAPI {
 }
 
 export interface EventsAPI {
-  query(
-    queryParams?: EventQueryParams,
-    opts?: CommandOptions
-  ): Promise<PaginatedResponse<EventResource>>;
+  query(params: EventQueryParams): Promise<PaginatedResponse<EventResource>>;
 }
 
 export interface StockAdjustmentsAPI {
   query(
-    queryParams: StockAdjustmentQueryParams,
-    opts?: CommandOptions
+    params: StockAdjustmentQueryParams
   ): Promise<PaginatedResponse<StockAdjustmentResource>>;
   create(
     bodyParams: CreateStockAdjustmentParams,
@@ -882,9 +860,45 @@ export interface StockAPI {
 
 export interface StockReservationsAPI {
   show(
-    queryParams?: { id?: ID } & SparseAttributes & RelationshipLimits,
-    opts?: CommandOptions
+    params: ShowStockReservationParams
   ): SDKMethodResult<StockReservationResource>;
+}
+
+// Show method parameter interfaces that combine ID with command options
+export interface ShowMarketplaceParams
+  extends CommandOptions,
+    SparseAttributes,
+    RelationshipLimits {
+  id?: ID;
+}
+
+export interface ShowUserParams
+  extends CommandOptions,
+    SparseAttributes,
+    RelationshipLimits {
+  id?: ID;
+  email?: string;
+}
+
+export interface ShowListingParams
+  extends CommandOptions,
+    SparseAttributes,
+    RelationshipLimits {
+  id?: ID;
+}
+
+export interface ShowTransactionParams
+  extends CommandOptions,
+    SparseAttributes,
+    RelationshipLimits {
+  id?: ID;
+}
+
+export interface ShowStockReservationParams
+  extends CommandOptions,
+    SparseAttributes,
+    RelationshipLimits {
+  id?: ID;
 }
 
 // Main SDK interface

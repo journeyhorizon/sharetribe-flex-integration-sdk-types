@@ -408,24 +408,20 @@ function testSparseAttributes(sdk: SharetribeIntegrationSDK): void {
 
   // Test sparse attributes for transactions
   const transactionSparse: Promise<ApiResponse<TransactionResource>> =
-    sdk.transactions.show(
-      {
-        id: {} as UUID,
-        "fields.transaction": [
-          "lineItems",
-          "payinTotal",
-          "payoutTotal",
-          "lastTransition",
-        ],
-        "fields.listing": ["title", "price"],
-        "fields.user": ["profile.displayName"],
-        "fields.booking": ["start", "end", "seats"],
-        "limit.messages": 10,
-      },
-      {
-        include: ["listing", "customer", "provider", "booking", "messages"],
-      }
-    );
+    sdk.transactions.show({
+      id: {} as UUID,
+      "fields.transaction": [
+        "lineItems",
+        "payinTotal",
+        "payoutTotal",
+        "lastTransition",
+      ],
+      "fields.listing": ["title", "price"],
+      "fields.user": ["profile.displayName"],
+      "fields.booking": ["start", "end", "seats"],
+      "limit.messages": 10,
+      include: ["listing", "customer", "provider", "booking", "messages"],
+    });
 
   // Test sparse attributes with command options
   const listingUpdate = sdk.listings.update(
